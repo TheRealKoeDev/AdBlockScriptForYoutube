@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2023.11.11.1
+// @version      2023.11.11.2
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -22,6 +22,7 @@
             .ytp-paid-content-overlay,
             .ytd-promoted-sparkles-web-renderer,
             .ytd-video-masthead-ad-v3-renderer,
+            [target-id="engagement-panel-ads"],
             ytd-action-companion-ad-rendere,
             ytd-ad-slot-renderer,
             ytd-in-feed-ad-layout-renderer,
