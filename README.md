@@ -2,8 +2,7 @@
 
 ## Introduction
 
-This repository contains a script that removed pesky Youtube Ads from YouTube.<br>
-The method of adblocking is currently undetected by YouTube.<br>
+This repository contains a script that removes pesky Ads from YouTube, without being detected.<br>
 It written to be used in combination with the [Tempermonkey](https://www.tampermonkey.net/) extension.<br>
 
 ## Installation
