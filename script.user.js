@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -18,6 +18,7 @@
     {
         const hiddenCssElements = `
             #offer-module,
+            #masthead-ad,
             #player-ads,
             .ytd-display-ad-renderer,
             .ytp-paid-content-overlay,
