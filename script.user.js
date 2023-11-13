@@ -25,11 +25,11 @@
             .ytd-promoted-sparkles-web-renderer,
             .ytd-video-masthead-ad-v3-renderer,
             [target-id="engagement-panel-ads"],
+            yt-mealbar-promo-renderer,
             ytd-action-companion-ad-rendere,
             ytd-ad-slot-renderer,
             ytd-in-feed-ad-layout-renderer,
-            yt-mealbar-promo-renderer,
-            ytd-merch-shelf-renderer,            
+            ytd-merch-shelf-renderer,
             ytd-rich-section-renderer:has( > #content > ytd-statement-banner-renderer) {
                 display: none !important;
             }
