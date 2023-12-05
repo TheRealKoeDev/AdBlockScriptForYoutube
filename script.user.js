@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2.0
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -46,6 +46,9 @@
 
     // Video Adblocker
     {
+        const adClass = 'ad-showing';
+        const videoPlayerId = 'movie_player';
+
         function fastForwardVideo(videoElement) {
             const isVideoElement = videoElement instanceof HTMLVideoElement;
             if (!isVideoElement) {
@@ -58,37 +61,53 @@
         }
 
         function skipPlayerAd(videoPlayerElement) {
+            const skipButton = videoPlayerElement.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button,.ytp-ad-skip-button-modern');
+            if (skipButton) {
+                skipButton.click();
+                return;
+            }
+
             const videoTag = videoPlayerElement.getElementsByTagName('video')[0];
             fastForwardVideo(videoTag);
+        }
 
-            const skipButtons = videoPlayerElement.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button,.ytp-ad-skip-button-modern');
-            skipButtons?.click();
+        function isPlayingAds(videoPlayer) {
+            return videoPlayer?.classList?.contains(adClass);
+        }
+
+        function skipAllPlayerAds(videoPlayerElement) {
+            skipPlayerAd(videoPlayerElement);
+
+            const interval = setInterval(() => {
+                const isPlayingAds = isPlayingAds(videoPlayerElement);
+                if(!isPlayingAds) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                skipPlayerAd(videoPlayerElement);
+            }, 100);
         }
 
         function monitorVideoPlayerAds(videoPlayer) {
-            function isPlayingAds(videoPlayer) {
-                return videoPlayer?.classList?.contains('ad-showing');
-            }
-
             const observerConfig = {
                 attributes: true,
                 attributeFilter: ['class'],
+                attributeoldvalue: true,
             };
 
             new MutationObserver((mutationRecords) => {
-                const ads = mutationRecords.some(mutationRecord => isPlayingAds(mutationRecord.target));
-                if (ads) {
-                    // This seems to be triggered again after the first ad skip, so it is fine for now even for multipe ads
-                    skipPlayerAd(videoPlayer);
+                const startedPlayingAds = mutationRecords.some(mutationRecord => isPlayingAds(mutationRecord.target) && !mutationRecord.oldValue?.includes(adClass));
+                if (startedPlayingAds) {
+                    skipAllPlayerAds(videoPlayer);
                 }
             }).observe(videoPlayer, observerConfig);
 
             if (isPlayingAds(videoPlayer)) {
-                skipPlayerAd(videoPlayer);
+                skipAllPlayerAds(videoPlayer);
             }
         }
 
-        const videoPlayerId = 'movie_player';
         const videoPlayer = document.getElementById(videoPlayerId);
         if (videoPlayer) {
             monitorVideoPlayerAds(videoPlayer);
