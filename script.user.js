@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -79,8 +79,8 @@
             skipPlayerAd(videoPlayerElement);
 
             const interval = setInterval(() => {
-                const isPlayingAds = isPlayingAds(videoPlayerElement);
-                if(!isPlayingAds) {
+                const adsArePlaying = isPlayingAds(videoPlayerElement);
+                if(!adsArePlaying) {
                     clearInterval(interval);
                     return;
                 }
