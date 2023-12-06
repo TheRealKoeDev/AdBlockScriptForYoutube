@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -133,11 +133,10 @@
             }).observe(document.body, observerConfig);
         }
 
-        if (!document.hidden) {
+        if (document.hidden) {
+            document.addEventListener("visibilitychange", init);
+        } else {
             init();
-            return;
         }
-
-        document.addEventListener("visibilitychange", init);
     }
 })();
