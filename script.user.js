@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -108,25 +108,36 @@
             }
         }
 
-        const videoPlayer = document.getElementById(videoPlayerId);
-        if (videoPlayer) {
-            monitorVideoPlayerAds(videoPlayer);
-            // The player seems to be kept in the html, so we dont need to keep detecting
+        function init() {
+            document.removeEventListener("visibilitychange", init);
+
+            const videoPlayer = document.getElementById(videoPlayerId);
+            if (videoPlayer) {
+                monitorVideoPlayerAds(videoPlayer);
+                // The player seems to be kept in the html, so we dont need to keep detecting
+                return;
+            }
+
+            const observerConfig = {
+                childList: true,
+                subtree: true,
+            };
+
+            new MutationObserver((mutationRecords, observer) => {
+                const addedVideoPlayer = mutationRecords.find(mutationRecord => mutationRecord.target?.id === videoPlayerId)?.target;
+                if (addedVideoPlayer) {
+                    monitorVideoPlayerAds(addedVideoPlayer);
+                    // The player seems to be kept in the html, so we dont need to keep detecting
+                    observer.disconnect();
+                }
+            }).observe(document.body, observerConfig);
+        }
+
+        if (!document.hidden) {
+            init();
             return;
         }
 
-        const observerConfig = {
-            childList: true,
-            subtree: true,
-        };
-
-        new MutationObserver((mutationRecords, observer) => {
-            const addedVideoPlayer = mutationRecords.find(mutationRecord => mutationRecord.target?.id === videoPlayerId)?.target;
-            if (addedVideoPlayer) {
-                monitorVideoPlayerAds(addedVideoPlayer);
-                // The player seems to be kept in the html, so we dont need to keep detecting
-                observer.disconnect();
-            }
-        }).observe(document.body, observerConfig);
+        document.addEventListener("visibilitychange", init);
     }
 })();
