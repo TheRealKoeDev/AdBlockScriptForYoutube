@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2.3
+// @version      2.4
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -47,7 +47,11 @@
     // Video Adblocker
     {
         const adClass = 'ad-showing';
-        const videoPlayerId = 'movie_player';
+        const videoPlayerId = 'movie_player';        
+
+        function isPlayingAds(videoPlayer) {
+            return videoPlayer?.classList?.contains(adClass);
+        }
 
         function fastForwardVideo(videoElement) {
             const isVideoElement = videoElement instanceof HTMLVideoElement;
@@ -71,10 +75,6 @@
             fastForwardVideo(videoTag);
         }
 
-        function isPlayingAds(videoPlayer) {
-            return videoPlayer?.classList?.contains(adClass);
-        }
-
         function skipAllPlayerAds(videoPlayerElement) {
             skipPlayerAd(videoPlayerElement);
 
@@ -93,7 +93,7 @@
             const observerConfig = {
                 attributes: true,
                 attributeFilter: ['class'],
-                attributeoldvalue: true,
+                attributeOldValue: true,
             };
 
             new MutationObserver((mutationRecords) => {
