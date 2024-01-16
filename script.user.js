@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ad-Blocker Script for YouTube
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.6
 // @description  Tries to get rid of those pesky YouTube ads, without to temper too much with the rest of the app.
 // @author       TheRealKoeDev
 // @match        https://www.youtube.com/*
@@ -66,14 +66,15 @@
         }
 
         function skipPlayerAd(videoPlayerElement) {
-            const skipButton = videoPlayerElement.querySelector('.videoAdUiSkipButton,.ytp-ad-skip-button,.ytp-ad-skip-button-modern');
-            if (skipButton) {
-                skipButton.click();
-                return;
+            const skipButtons = videoPlayerElement.querySelectorAll('.videoAdUiSkipButton, .ytp-ad-skip-button, .ytp-ad-skip-button-modern');
+            if(skipButtons.length) {                
+                for(const skipButton of Array.from(skipButtons)) {
+                    skipButton.click();
+                }
+            } else {
+                const videoTag = videoPlayerElement.getElementsByTagName('video')[0];
+                fastForwardVideo(videoTag);
             }
-
-            const videoTag = videoPlayerElement.getElementsByTagName('video')[0];
-            fastForwardVideo(videoTag);
         }
 
         function skipAllPlayerAds(videoPlayerElement) {
